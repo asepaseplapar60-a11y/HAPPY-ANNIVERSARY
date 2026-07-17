@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎉 Happy 1 Day Anniversary - DOKSLI ANTI TIMPA 🎂</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body {
+    width:100%;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  body {
+    background: linear-gradient(135deg,#ff9a9e,#fad0c4,#fbc2eb,#a18cd1,#ffd1ff);
+    background-size: 400% 400%;
+    animation: bgMove 12s ease infinite;
+    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    position:relative;
+  }
+
+  @keyframes bgMove {
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+  }
+
+  /* ===== Confetti ===== */
+  #confetti-container {
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:5;
+  }
+  .confetti {
+    position:absolute;
+    top:-10vh;
+    font-size:22px;
+    opacity:0.9;
+    animation: fall linear infinite;
+  }
+  @keyframes fall {
+    0%{ transform:translateY(0) rotate(0deg); opacity:1;}
+    100%{ transform:translateY(115vh) rotate(360deg); opacity:0.7;}
+  }
+
+  /* ===== INTRO OVERLAY (amplop) — fixed, terpisah dari surat ===== */
+  #intro-overlay {
+    position:fixed;
+    inset:0;
+    z-index:50;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:26px;
+    background: linear-gradient(135deg,#ffb6d5,#c9a0f5);
+    transition: opacity 0.6s ease;
+  }
+  #intro-overlay.fade-out {
+    opacity:0;
+    pointer-events:none;
+  }
+
+  .env-container {
+    position:relative;
+    width:260px;
+    height:190px;
+    perspective:1200px;
+    cursor:pointer;
+  }
+
+  .env-back {
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:260px;
+    height:170px;
+    background: linear-gradient(135deg,#fff0f6,#ffe1ec);
+    border:3px solid #ff8fb1;
+    border-radius:10px;
+    box-shadow: 0 20px 35px rgba(120,20,70,0.35);
+    z-index:1;
+  }
+
+  /* seam kiri & kanan bikin efek lipatan amplop */
+  .env-seam-left, .env-seam-right {
+    position:absolute;
+    bottom:0;
+    width:0;
+    height:0;
+    z-index:2;
+  }
+  .env-seam-left {
+    left:0;
+    border-left:130px solid transparent;
+    border-bottom:95px solid #ffd3e4;
+  }
+  .env-seam-right {
+    right:0;
+    border-right:130px solid transparent;
+    border-bottom:95px solid #ffc7dc;
+  }
+
+  .env-letter-peek {
+    position:absolute;
+    bottom:14px;
+    left:20px;
+    width:220px;
+    height:110px;
+    background:#fffdf8;
+    border-radius:6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index:3;
+    transition: transform 0.8s ease 0.35s;
+  }
+
+  .env-flap {
+    position:absolute;
+    top:0;
+    left:0;
+    width:0;
+    height:0;
+    border-left:130px solid transparent;
+    border-right:130px solid transparent;
+    border-top:110px solid #ff8fb1;
+    transform-origin: top center;
+    transform-style: preserve-3d;
+    transition: transform 0.9s cubic-bezier(.4,.2,.2,1);
+    z-index:4;
+    filter: drop-shadow(0 4px 6px rgba(150,30,80,0.3));
+  }
+
+  .env-heart {
+    position:absolute;
+    top:52px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:34px;
+    z-index:6;
+    animation: pulse 1.2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%,100%{ transform:translateX(-50%) scale(1);}
+    50%{ transform:translateX(-50%) scale(1.18);}
+  }
+
+  /* state: terbuka */
+  .env-container.open .env-flap {
+    transform: rotateX(180deg);
+    z-index:0;
+  }
+  .env-container.open .env-letter-peek {
+    transform: translateY(-120px);
+  }
+
+  .env-hint {
+    color:#fff;
+    font-weight:bold;
+    text-shadow:0 2px 6px rgba(0,0,0,0.3);
+    font-size:16px;
+    text-align:center;
+    animation: bounce 1.5s ease infinite;
+  }
+
+  @keyframes bounce {
+    0%,100%{ transform:translateY(0);}
+    50%{ transform:translateY(-8px);}
+  }
+
+  /* ===== Letter Card (muncul setelah amplop dibuka) ===== */
+  #letter-wrap {
+    display:none;
+    position:relative;
+    z-index:10;
+    max-width:640px;
+    width:92%;
+    margin:40px auto 60px;
+  }
+
+  #letter-wrap.show {
+    display:block;
+    animation: popIn 0.7s ease;
+  }
+
+  @keyframes popIn {
+    0%{ transform:scale(0.7) translateY(40px); opacity:0;}
+    100%{ transform:scale(1) translateY(0); opacity:1;}
+  }
+
+  .letter-card {
+    position:relative;
+    background: linear-gradient(#fffaf5,#fff0f6);
+    border-radius:22px;
+    padding:40px 26px 50px;
+    box-shadow: 0 25px 60px rgba(120,40,80,0.35);
+    border:4px dashed #ff9ac1;
+    overflow:hidden;
+  }
+
+  .letter-card::before {
+    content:"";
+    position:absolute;
+    inset:0;
+    background: radial-gradient(circle at 20% 20%, rgba(255,215,120,0.25), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(255,120,180,0.25), transparent 40%);
+    pointer-events:none;
+  }
+
+  .title {
+    text-align:center;
+    font-size:24px;
+    font-weight:900;
+    background: linear-gradient(90deg,#ff5e8a,#ff9a3c,#ffd23c,#ff5e8a);
+    background-size:300% 100%;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation: shine 4s linear infinite;
+    margin-bottom:22px;
+    line-height:1.45;
+    position:relative;
+    z-index:1;
+  }
+
+  @keyframes shine {
+    0%{ background-position:0% 50%;}
+    100%{ background-position:300% 50%;}
+  }
+
+  .letter-text {
+    font-size:16px;
+    line-height:1.9;
+    color:#5a3548;
+    white-space:pre-line;
+    text-align:left;
+    position:relative;
+    z-index:1;
+  }
+
+  .photo-strip {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:16px;
+    margin:0 0 26px;
+    position:relative;
+    z-index:1;
+  }
+
+  .photo-strip img {
+    width:120px;
+    height:120px;
+    object-fit:cover;
+    border-radius:14px;
+    border:4px solid #fff;
+    box-shadow:0 10px 20px rgba(0,0,0,0.25);
+    transform:rotate(var(--r));
+    transition: transform 0.3s ease;
+  }
+
+  .photo-strip img:nth-child(1){ --r:-6deg; }
+  .photo-strip img:nth-child(2){ --r:4deg; }
+  .photo-strip img:nth-child(3){ --r:-3deg; }
+  .photo-strip img:nth-child(4){ --r:6deg; }
+
+  .photo-strip img:hover {
+    transform: rotate(0deg) scale(1.12);
+    z-index:5;
+  }
+
+  .corner-emoji {
+    position:absolute;
+    font-size:32px;
+    animation: floaty 3s ease-in-out infinite;
+    opacity:0.85;
+    z-index:1;
+  }
+  .c1{ top:10px; left:10px; animation-delay:0s;}
+  .c2{ top:10px; right:10px; animation-delay:0.5s;}
+  .c3{ bottom:10px; left:10px; animation-delay:1s;}
+  .c4{ bottom:10px; right:10px; animation-delay:1.5s;}
+
+  @keyframes floaty {
+    0%,100%{ transform:translateY(0) rotate(0deg);}
+    50%{ transform:translateY(-10px) rotate(10deg);}
+  }
+
+  .balloons {
+    text-align:center;
+    font-size:32px;
+    margin-top:14px;
+    letter-spacing:10px;
+    animation: floaty2 4s ease-in-out infinite;
+    position:relative;
+    z-index:1;
+  }
+
+  @keyframes floaty2 {
+    0%,100%{ transform:translateY(0);}
+    50%{ transform:translateY(-14px);}
+  }
+
+  .music-note {
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#fff;
+    border-radius:50%;
+    width:54px;
+    height:54px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.3);
+    cursor:pointer;
+    z-index:60;
+    animation: spin 6s linear infinite;
+  }
+
+  @keyframes spin {
+    from{ transform:rotate(0deg);}
+    to{ transform:rotate(360deg);}
+  }
+
+  @media (max-width:340px){
+    .env-container{ transform:scale(0.85); }
+    .photo-strip img{ width:95px; height:95px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="confetti-container"></div>
+
+<!-- ===== Overlay Amplop ===== -->
+<div id="intro-overlay">
+  <div class="env-container" id="envelope">
+    <div class="env-letter-peek"></div>
+    <div class="env-back"></div>
+    <div class="env-seam-left"></div>
+    <div class="env-seam-right"></div>
+    <div class="env-flap"></div>
+    <div class="env-heart">💌</div>
+  </div>
+  <div class="env-hint">👆 Tap amplop untuk membuka surat</div>
+</div>
+
+<!-- ===== Isi Surat ===== -->
+<div id="letter-wrap">
+  <div class="letter-card">
+    <div class="corner-emoji c1">🎈</div>
+    <div class="corner-emoji c2">🎊</div>
+    <div class="corner-emoji c3">🎂</div>
+    <div class="corner-emoji c4">🎉</div>
+
+    <div class="title">🎉🎂 HAPPY 1 DAY ANNIVERSARY<br>SALURAN DOKSLI ANTI TIMPA! 🎂🎉</div>
+
+    <div class="photo-strip">
+      <img src="https://files.catbox.moe/vsfj0v.png" alt="foto 1">
+      <img src="https://files.catbox.moe/whyacr.jpg" alt="foto 2">
+      <img src="https://files.catbox.moe/kms8tl.jpg" alt="foto 3">
+      <img src="https://files.catbox.moe/cgi5wo.jpg" alt="foto 4">
+    </div>
+
+    <div class="letter-text">Gak nyangka yaa, akhirnya saluran ini resmi menginjak umur 1 hari! 🥳😹
+
+Terima kasih banget buat semua yang udah gabung, nonton, dukung, dan nemenin dari hari pertama. Walaupun baru sehari, semoga ini jadi awal perjalanan yang panjang dan penuh kenangan. 🤭✨
+
+Semoga saluran DOKSLI ANTI TIMPA makin rame, makin berkembang, makin banyak member yang join, dan semoga semua konten ke depannya makin seru! 🤤🔥
+
+Jangan lupa terus dukung saluran ini yaa! Ajak teman-teman kalian buat gabung juga. Kita tumbuh bareng dari nol sampai nanti jadi saluran yang dikenal banyak orang! 😹💙
+
+Selamat ulang tahun yang ke-1 hari, DOKSLI ANTI TIMPA! 🥳🎉
+Masih 1 hari sih... tapi semangatnya udah kayak 100 tahun! 😹🤤🤭</div>
+
+    <div class="balloons">🎈🎈🎈🎈🎈</div>
+  </div>
+</div>
+
+<div class="music-note" id="music-toggle">🎵</div>
+<audio id="bgm" src="https://files.catbox.moe/tjhwds.mp3" loop></audio>
+
+<script>
+  // Confetti generator
+  const emojis = ['🎉','🎊','🎈','✨','🎂','💖','🥳'];
+  const confettiContainer = document.getElementById('confetti-container');
+  for (let i = 0; i < 30; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    el.style.left = Math.random()*100 + 'vw';
+    el.style.animationDuration = (5 + Math.random()*6) + 's';
+    el.style.animationDelay = (Math.random()*8) + 's';
+    confettiContainer.appendChild(el);
+  }
+
+  const overlay = document.getElementById('intro-overlay');
+  const envelope = document.getElementById('envelope');
+  const letterWrap = document.getElementById('letter-wrap');
+  const bgm = document.getElementById('bgm');
+  const musicToggle = document.getElementById('music-toggle');
+
+  envelope.addEventListener('click', () => {
+    if (envelope.classList.contains('open')) return;
+    envelope.classList.add('open');
+
+    // putar musik saat interaksi pertama (aman dari kebijakan autoplay browser)
+    bgm.volume = 0.8;
+    bgm.play().catch(()=>{});
+
+    setTimeout(() => {
+      overlay.classList.add('fade-out');
+      letterWrap.classList.add('show');
+      setTimeout(() => { overlay.style.display = 'none'; }, 650);
+    }, 950);
+  });
+
+  musicToggle.addEventListener('click', () => {
+    if (bgm.paused) {
+      bgm.play().catch(()=>{});
+      musicToggle.textContent = '🎵';
+    } else {
+      bgm.pause();
+      musicToggle.textContent = '🔇';
+    }
+  });
+
+  // coba autoplay langsung (biasanya diblokir sampai user klik amplop, itu wajar)
+  window.addEventListener('load', () => {
+    bgm.volume = 0.8;
+    bgm.play().catch(()=>{});
+  });
+</script>
+
+</body>
+</html>
